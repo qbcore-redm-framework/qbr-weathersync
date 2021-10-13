@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['qbr-core']:GetCoreObject()
 local CurrentWeather = Config.StartWeather
 local lastWeather = CurrentWeather
 local baseTime = Config.BaseTime
@@ -11,8 +11,8 @@ local disable = Config.Disabled
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     disable = false
-    TriggerServerEvent('qb-weathersync:server:RequestStateSync')
-    TriggerServerEvent('qb-weathersync:server:RequestCommands')
+    TriggerServerEvent('qbr-weathersync:server:RequestStateSync')
+    TriggerServerEvent('qbr-weathersync:server:RequestCommands')
 end)
 
 function DisableSync()
@@ -31,17 +31,17 @@ end
 
 function EnableSync()
     disable = false
-    TriggerServerEvent('qb-weathersync:server:RequestStateSync')
+    TriggerServerEvent('qbr-weathersync:server:RequestStateSync')
 end
 
-RegisterNetEvent('qb-weathersync:client:SyncWeather')
-AddEventHandler('qb-weathersync:client:SyncWeather', function(NewWeather, newblackout)
+RegisterNetEvent('qbr-weathersync:client:SyncWeather')
+AddEventHandler('qbr-weathersync:client:SyncWeather', function(NewWeather, newblackout)
     CurrentWeather = NewWeather
     blackout = newblackout
 end)
 
-RegisterNetEvent('qb-weathersync:client:RequestCommands')
-AddEventHandler('qb-weathersync:client:RequestCommands', function(isAllowed)
+RegisterNetEvent('qbr-weathersync:client:RequestCommands')
+AddEventHandler('qbr-weathersync:client:RequestCommands', function(isAllowed)
     if isAllowed then
         TriggerEvent('chat:addSuggestion', '/freezetime', _U('help_freezecommand'), {})
         TriggerEvent('chat:addSuggestion', '/freezeweather', _U('help_freezeweathercommand'), {})
@@ -80,8 +80,8 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterNetEvent('qb-weathersync:client:SyncTime')
-AddEventHandler('qb-weathersync:client:SyncTime', function(base, offset, freeze)
+RegisterNetEvent('qbr-weathersync:client:SyncTime')
+AddEventHandler('qbr-weathersync:client:SyncTime', function(base, offset, freeze)
     freezeTime = freeze
     timeOffset = offset
     baseTime = base

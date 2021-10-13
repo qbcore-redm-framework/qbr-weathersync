@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['qbr-core']:GetCoreObject()
 local CurrentWeather = Config.StartWeather
 local baseTime = Config.BaseTime
 local timeOffset = Config.TimeOffset
@@ -6,22 +6,22 @@ local freezeTime = Config.FreezeTime
 local blackout = Config.Blackout
 local newWeatherTimer = Config.NewWeatherTimer
 
-RegisterServerEvent('qb-weathersync:server:RequestStateSync')
-AddEventHandler('qb-weathersync:server:RequestStateSync', function()
-    TriggerClientEvent('qb-weathersync:client:SyncWeather', -1, CurrentWeather, blackout)
-    TriggerClientEvent('qb-weathersync:client:SyncTime', -1, baseTime, timeOffset, freezeTime)
+RegisterServerEvent('qbr-weathersync:server:RequestStateSync')
+AddEventHandler('qbr-weathersync:server:RequestStateSync', function()
+    TriggerClientEvent('qbr-weathersync:client:SyncWeather', -1, CurrentWeather, blackout)
+    TriggerClientEvent('qbr-weathersync:client:SyncTime', -1, baseTime, timeOffset, freezeTime)
 end)
 
-RegisterServerEvent('qb-weathersync:server:RequestCommands')
-AddEventHandler('qb-weathersync:server:RequestCommands', function()
+RegisterServerEvent('qbr-weathersync:server:RequestCommands')
+AddEventHandler('qbr-weathersync:server:RequestCommands', function()
     local src = source
     if isAllowedToChange(src) then
-        TriggerClientEvent('qb-weathersync:client:RequestCommands', src, true)
+        TriggerClientEvent('qbr-weathersync:client:RequestCommands', src, true)
     end
 end)
 
-RegisterServerEvent('qb-weathersync:server:setWeather')
-AddEventHandler('qb-weathersync:server:setWeather', function(weather)
+RegisterServerEvent('qbr-weathersync:server:setWeather')
+AddEventHandler('qbr-weathersync:server:setWeather', function(weather)
     local validWeatherType = false
     for i,wtype in ipairs(Config.AvailableWeatherTypes) do
         if wtype == string.upper(weather) then
@@ -32,14 +32,14 @@ AddEventHandler('qb-weathersync:server:setWeather', function(weather)
         print(_U('weather_updated'))
         CurrentWeather = string.upper(weather)
         newWeatherTimer = Config.NewWeatherTimer
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     else
         print(_U('weather_invalid'))
     end
 end)
 
-RegisterServerEvent('qb-weathersync:server:setTime')
-AddEventHandler('qb-weathersync:server:setTime', function(hour, minute)
+RegisterServerEvent('qbr-weathersync:server:setTime')
+AddEventHandler('qbr-weathersync:server:setTime', function(hour, minute)
     if hour ~= nil and minute ~= nil then
         local argh = tonumber(hour)
         local argm = tonumber(minute)
@@ -54,7 +54,7 @@ AddEventHandler('qb-weathersync:server:setTime', function(hour, minute)
             ShiftToMinute(0)
         end
         print(_U('time_change', argh, argm))
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     else
         print(_U('time_invalid'))
     end
@@ -68,10 +68,10 @@ function isAllowedToChange(player)
     end
 end
 
-RegisterServerEvent('qb-weathersync:server:toggleBlackout')
-AddEventHandler('qb-weathersync:server:toggleBlackout', function()
+RegisterServerEvent('qbr-weathersync:server:toggleBlackout')
+AddEventHandler('qbr-weathersync:server:toggleBlackout', function()
     blackout = not blackout
-    TriggerEvent('qb-weathersync:server:RequestStateSync')
+    TriggerEvent('qbr-weathersync:server:RequestStateSync')
 end)
 
 RegisterCommand('freezetime', function(source, args)
@@ -134,7 +134,7 @@ RegisterCommand('weather', function(source, args)
                 print(_U('weather_updated'))
                 CurrentWeather = string.upper(args[1])
                 newWeatherTimer = Config.NewWeatherTimer
-                TriggerEvent('qb-weathersync:server:RequestStateSync')
+                TriggerEvent('qbr-weathersync:server:RequestStateSync')
             else
                 print(_U('weather_invalid'))
             end
@@ -154,7 +154,7 @@ RegisterCommand('weather', function(source, args)
                     TriggerClientEvent('QBCore:Notify', source, _U('weather_willchangeto', string.lower(args[1])))
                     CurrentWeather = string.upper(args[1])
                     newWeatherTimer = Config.NewWeatherTimer
-                    TriggerEvent('qb-weathersync:server:RequestStateSync')
+                    TriggerEvent('qbr-weathersync:server:RequestStateSync')
                 else
                     TriggerClientEvent('QBCore:Notify', source, _U('weather_invalidc'), 'error')
                 end
@@ -182,7 +182,7 @@ RegisterCommand('blackout', function(source)
             else
                 TriggerClientEvent('QBCore:Notify', source, _U('blackout_disabledc'))
             end
-            TriggerEvent('qb-weathersync:server:RequestStateSync')
+            TriggerEvent('qbr-weathersync:server:RequestStateSync')
         end
     end
 end)
@@ -196,7 +196,7 @@ RegisterCommand('morning', function(source)
         ShiftToMinute(0)
         ShiftToHour(9)
         TriggerClientEvent('QBCore:Notify', source, _U('time_morning'))
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     end
 end)
 
@@ -209,7 +209,7 @@ RegisterCommand('noon', function(source)
         ShiftToMinute(0)
         ShiftToHour(12)
         TriggerClientEvent('QBCore:Notify', source, _U('time_noon'))
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     end
 end)
 
@@ -222,7 +222,7 @@ RegisterCommand('evening', function(source)
         ShiftToMinute(0)
         ShiftToHour(18)
         TriggerClientEvent('QBCore:Notify', source, _U('time_evening'))
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     end
 end)
 
@@ -235,7 +235,7 @@ RegisterCommand('night', function(source)
         ShiftToMinute(0)
         ShiftToHour(23)
         TriggerClientEvent('QBCore:Notify', source, _U('time_night'))
-        TriggerEvent('qb-weathersync:server:RequestStateSync')
+        TriggerEvent('qbr-weathersync:server:RequestStateSync')
     end
 end)
 
@@ -263,7 +263,7 @@ RegisterCommand('time', function(source, args, rawCommand)
                 ShiftToMinute(0)
             end
             print('time change ', argh, argm)
-            TriggerEvent('qb-weathersync:server:RequestStateSync')
+            TriggerEvent('qbr-weathersync:server:RequestStateSync')
         else
             print('invalid time')
         end
@@ -290,7 +290,7 @@ RegisterCommand('time', function(source, args, rawCommand)
                     newtime = newtime .. minute
                 end
                 TriggerClientEvent('QBCore:Notify', source, _U('time_changec', newtime))
-                TriggerEvent('qb-weathersync:server:RequestStateSync')
+                TriggerEvent('qbr-weathersync:server:RequestStateSync')
             else
                 TriggerClientEvent('QBCore:Notify', source, _U('time_invalid'), 'error')
             end
@@ -315,14 +315,14 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5000)
-        TriggerClientEvent('qb-weathersync:client:SyncTime', -1, baseTime, timeOffset, freezeTime)
+        TriggerClientEvent('qbr-weathersync:client:SyncTime', -1, baseTime, timeOffset, freezeTime)
     end
 end)
 
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(300000)
-        TriggerClientEvent('qb-weathersync:client:SyncWeather', -1, CurrentWeather, blackout)
+        TriggerClientEvent('qbr-weathersync:client:SyncWeather', -1, CurrentWeather, blackout)
     end
 end)
 
@@ -369,6 +369,6 @@ function NextWeatherStage()
     elseif CurrentWeather == "HAIL" or CurrentWeather == "SANDSTORM" then
         CurrentWeather = "SUNNY"
     end
-    TriggerEvent("qb-weathersync:server:RequestStateSync")
-    print('[qb-weathersync] New Weather: ' ..CurrentWeather)
+    TriggerEvent("qbr-weathersync:server:RequestStateSync")
+    print('[qbr-weathersync] New Weather: ' ..CurrentWeather)
 end
