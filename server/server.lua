@@ -1,4 +1,4 @@
-local QBCore = exports['qbr-core']:GetCoreObject()
+
 local CurrentWeather = Config.StartWeather
 local baseTime = Config.BaseTime
 local timeOffset = Config.TimeOffset
@@ -10,7 +10,7 @@ local newWeatherTimer = Config.NewWeatherTimer
 --- @param src number - Source to check
 --- @return boolean - has permission
 local function isAllowedToChange(src)
-    if src == 0 or QBCore.Functions.HasPermission(src, "admin") or IsPlayerAceAllowed(src, 'command') then
+    if src == 0 or exports['qbr-core']:HasPermission(src, "admin") or IsPlayerAceAllowed(src, 'command') then
         return true
     end
     return false
