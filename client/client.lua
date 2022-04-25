@@ -24,10 +24,10 @@ RegisterNetEvent('qbr-weathersync:client:DisableSync', function()
 	CreateThread(function()
 		while disable do
 			SetRainLevel(0.0)
-			SetWeatherTypePersist('CLEAR')
-			SetWeatherTypeNow('CLEAR')
-			SetWeatherTypeNowPersist('CLEAR')
-			NetworkOverrideClockTime(18, 0, 0)
+			SetWeatherTypePersist('SUNNY')
+			SetWeatherTypeNow('SUNNY')
+			SetWeatherTypeNowPersist('SUNNY')
+			NetworkOverrideClockTime(12, 0, 0)
 			Wait(5000)
 		end
 	end)
@@ -63,37 +63,41 @@ RegisterNetEvent('qbr-weathersync:client:SyncTime', function(base, offset, freez
     baseTime = base
 end)
 
+
+
+
+
+
 CreateThread(function()
     while true do
         if not disable then
             if lastWeather ~= CurrentWeather then
                 lastWeather = CurrentWeather
-                SetWeatherTypeOverTime(CurrentWeather, 15.0)
+                Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false) -- SetWeatherType
                 Wait(15000)
             end
             Wait(100) -- Wait 0 seconds to prevent crashing.
             SetArtificialLightsState(blackout)
             -- SetArtificialLightsStateAffectsVehicles(blackoutVehicle)
-            ClearOverrideWeather()
-            ClearWeatherTypePersist()
-            SetWeatherTypeTransition(lastWeather)
-            -- SetWeatherTypeNow(lastWeather)
-            -- SetWeatherTypeNowPersist(lastWeather)
+            --ClearOverrideWeather()
+            --ClearWeatherTypePersist()
+            --SetWeatherTypeTransition(lastWeather)
+            --SetWeatherTypeNowPersist(lastWeather)
+            --SetWeatherTypeTransition(GetHashKey(lastWeather),GetHashKey(CurrentWeather), 0.7, 1)
 			Citizen.InvokeNative(0xFA3E3CA8A1DE6D5D, GetHashKey(lastWeather), GetHashKey(CurrentWeather), 0.7, 1)
-			Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false)
-            if lastWeather == 'XMAS' then
-                -- SetForceVehicleTrails(true)
-                -- SetForcePedFootstepsTracks(true)
+			--Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false)
+            if lastWeather == 'SNOW' or lastWeather == 'WHITEOUT' then
+                Citizen.InvokeNative(0xF6BEE7E80EC5CA40, 1) -- SetSnowLevel
+            end 
+            if lastWeather == 'DRIZZLE' or lastWeather == 'SLEET' then
+            	Citizen.InvokeNative(0x193DFC0526830FD6, 0.2)
+            elseif lastWeather == 'RAIN' or lastWeather == 'HAIL' or lastWeather == 'SHOWER' or lastWeather == 'THUNDER' then
+			 	Citizen.InvokeNative(0x193DFC0526830FD6, 0.5)
+            elseif lastWeather == 'THUNDERSTORM' then
+                Citizen.InvokeNative(0x193DFC0526830FD6, 0.7) -- SetRainLevel
             else
-                -- SetForceVehicleTrails(false)
-                -- SetForcePedFootstepsTracks(false)
-            end
-            if lastWeather == 'RAIN' then
-				Citizen.InvokeNative(0x193DFC0526830FD6, 0.3)
-            elseif lastWeather == 'THUNDER' then
-				Citizen.InvokeNative(0x193DFC0526830FD6, 0.5)
-            else
-				Citizen.InvokeNative(0x193DFC0526830FD6, 0.0)
+			 	Citizen.InvokeNative(0x193DFC0526830FD6, 0.0)
+                Citizen.InvokeNative(0xF6BEE7E80EC5CA40, 0)
             end
         else
             Wait(1000)

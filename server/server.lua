@@ -30,20 +30,30 @@ end
 
 --- Triggers event to switch weather to next stage
 local function nextWeatherStage()
-    if CurrentWeather == "CLEAR" or CurrentWeather == "CLOUDS" or CurrentWeather == "EXTRASUNNY"  then
-        CurrentWeather = (math.random(1,5) > 2) and "CLEARING" or "OVERCAST" -- 60/40 chance
-    elseif CurrentWeather == "CLEARING" or CurrentWeather == "OVERCAST" then
+    if CurrentWeather == "SUNNY" or CurrentWeather == "CLOUDS" or CurrentWeather == "HIGHPRESSURE"  then
+        CurrentWeather = (math.random(1,5) > 2) and "SUNNY" or "OVERCAST" -- 60/40 chance
+    elseif CurrentWeather == "SUNNY" or CurrentWeather == "OVERCAST" then
         local new = math.random(1,6)
-        if new == 1 then CurrentWeather = (CurrentWeather == "CLEARING") and "FOGGY" or "RAIN"
-        elseif new == 2 then CurrentWeather = "CLOUDS"
-        elseif new == 3 then CurrentWeather = "CLEAR"
-        elseif new == 4 then CurrentWeather = "EXTRASUNNY"
-        elseif new == 5 then CurrentWeather = "SMOG"
-        else CurrentWeather = "FOGGY"
+        if new == 1 then CurrentWeather = (CurrentWeather == "SUNNY") and "OVERCAST" or "RAIN"
+        elseif new == 2 then 
+            CurrentWeather = "CLOUDS"
+        elseif new == 3 then 
+            CurrentWeather = "SUNNY"
+        elseif new == 4 then 
+            CurrentWeather = "HIGHPRESSURE"
+        elseif new == 5 then 
+            CurrentWeather = "SANDSTORM"
+        else 
+            CurrentWeather = "FOG"
         end
-    elseif CurrentWeather == "THUNDER" or CurrentWeather == "RAIN" then CurrentWeather = "CLEARING"
-    elseif CurrentWeather == "SMOG" or CurrentWeather == "FOGGY" then CurrentWeather = "CLEAR"
-    else CurrentWeather = "CLEAR"
+    elseif CurrentWeather == "THUNDER" or CurrentWeather == "RAIN" or CurrentWeather == "THUNDERSTORM" then 
+        CurrentWeather = "OVERCASTDARK"
+    elseif CurrentWeather == "OVERCASTDARK" then
+        CurrentWeather = "SUNNY"
+    elseif CurrentWeather == "SMOG" or CurrentWeather == "FOG" then
+         CurrentWeather = "SUNNY"
+    else 
+        CurrentWeather = "HIGHPRESSURE"
     end
     TriggerEvent("qbr-weathersync:server:RequestStateSync")
 end
