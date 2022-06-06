@@ -145,8 +145,8 @@ RegisterNetEvent('qbr-weathersync:server:setWeather', function(weather)
     if isAllowedToChange(src) then
         local success = setWeather(weather)
         if src > 0 then
-            if (success) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.updated'), 2000, 0, 'hud_textures', 'check')
-            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.invalid'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (success) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.updated'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
+            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.invalid'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end
     end
@@ -157,8 +157,8 @@ RegisterNetEvent('qbr-weathersync:server:setTime', function(hour, minute)
     if isAllowedToChange(src) then
         local success = setTime(hour, minute)
         if src > 0 then
-            if (success) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.change', {value = hour, value2 = minute or "00"}), 2000, 0, 'hud_textures', 'check')
-            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.invalid'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (success) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.change', {value = hour, value2 = minute or "00"}), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
+            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.invalid'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end
     end
@@ -169,8 +169,8 @@ RegisterNetEvent('qbr-weathersync:server:toggleBlackout', function(state)
     if isAllowedToChange(src) then
         local newstate = setBlackout(state)
         if src > 0 then
-            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.enabled'), 2000, 0, 'hud_textures', 'check')
-            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.disabled'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.enabled'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
+            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.disabled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end
     end
@@ -181,8 +181,8 @@ RegisterNetEvent('qbr-weathersync:server:toggleFreezeTime', function(state)
     if isAllowedToChange(src) then
         local newstate = setTimeFreeze(state)
         if src > 0 then
-            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.now_frozen'), 2000, 0, 'hud_textures', 'check')
-            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.now_unfrozen'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.now_frozen'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
+            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('time.now_unfrozen'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end
     end
@@ -193,8 +193,8 @@ RegisterNetEvent('qbr-weathersync:server:toggleDynamicWeather', function(state)
     if isAllowedToChange(src) then
         local newstate = setDynamicWeather(state)
         if src > 0 then
-            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.now_unfrozen'), 2000, 0, 'hud_textures', 'check')
-            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.now_frozen'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (newstate) then TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.now_unfrozen'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
+            else TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('weather.now_frozen'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         end
     end
@@ -206,43 +206,43 @@ RegisterCommand('freezetime', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         local newstate = setTimeFreeze()
         if source > 0 then
-            if (newstate) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.frozenc'), 2000, 0, 'hud_textures', 'check') end
-            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.unfrozenc'), 2000, 0, 'hud_textures', 'check')
+            if (newstate) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.frozenc'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
+            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.unfrozenc'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE')
         end
         if (newstate) then return print(Lang:t('time.now_frozen')) end
         return print(Lang:t('time.now_unfrozen'))
     end
-    TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+    TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 end)
 
 RegisterCommand('freezeweather', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         local newstate = setDynamicWeather()
         if source > 0 then
-            if (newstate) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('dynamic_weather.enabled'), 2000, 0, 'hud_textures', 'check') end
-            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('dynamic_weather.disabled'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (newstate) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('dynamic_weather.enabled'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
+            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('dynamic_weather.disabled'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         end
         if (newstate) then return print(Lang:t('weather.now_unfrozen')) end
         return print(Lang:t('weather.now_frozen'))
     end
-    TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+    TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 end)
 
 RegisterCommand('weather', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         if args[1] == nil then
-            if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.invalid_syntaxc'), 2000, 0, 'mp_lobby_textures', 'cross') end
+            if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.invalid_syntaxc'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE') end
             return print(Lang:t('weather.invalid_syntax'))
         end
         local success = setWeather(args[1])
         if source > 0 then
-            if (success) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.willchangeto', {value = string.lower(args[1])}), 2000, 0, 'hud_textures', 'check') end
-            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.invalidc'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (success) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.willchangeto', {value = string.lower(args[1])}), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
+            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('weather.invalidc'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         end
         if (success) then return print(Lang:t('weather.updated')) end
         return print(Lang:t('weather.invalid'))
     else
-        TriggerClientEvent('QBCore:Notify', Lang:t('error.not_access'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', Lang:t('error.not_access'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
@@ -251,66 +251,66 @@ RegisterCommand('blackout', function(source, args, rawCommand)
     if isAllowedToChange(src) then
         local newstate = setBlackout()
         if src > 0 then
-            if (newstate) then return TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.enabledc'), 2000, 0, 'hud_textures', 'check') end
-            return TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.disabledc'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (newstate) then return TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.enabledc'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
+            return TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('blackout.disabledc'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         end
         if (newstate) then return print(Lang:t('blackout.enabled')) end
         return print(Lang:t('blackout.disabled'))
     end
-    TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+    TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
 end)
 
 RegisterCommand('morning', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         setTime(9, 0)
-        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.morning'), 2000, 0, 'hud_textures', 'check') end
+        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.morning'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
     else
-        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
 RegisterCommand('noon', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         setTime(12, 0)
-        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.noon'), 2000, 0, 'hud_textures', 'check') end
+        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.noon'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
     else
-        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
 RegisterCommand('evening', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         setTime(18, 0)
-        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.evening'), 2000, 0, 'hud_textures', 'check') end
+        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.evening'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
     else
-        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
 RegisterCommand('night', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         setTime(23, 0)
-        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.night'), 2000, 0, 'hud_textures', 'check') end
+        if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.night'), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
     else
-        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_allowed'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
 RegisterCommand('time', function(source, args, rawCommand)
     if isAllowedToChange(source) then
         if args[1] == nil then
-            if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.invalidc'), 2000, 0, 'mp_lobby_textures', 'cross') end
+            if source > 0 then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.invalidc'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE') end
             return print(Lang:t('time.invalid'))
         end
         local success = setTime(args[1], args[2])
         if source > 0 then
-            if (success) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.changec', {value = args[1]..':'..(args[2] or "00")}), 2000, 0, 'hud_textures', 'check') end
-            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.invalidc'), 2000, 0, 'mp_lobby_textures', 'cross')
+            if (success) then return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.changec', {value = args[1]..':'..(args[2] or "00")}), 5000, 0, 'hud_textures', 'check', 'COLOR_WHITE') end
+            return TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.invalidc'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         end
         if (success) then return print(Lang:t('time.change', {value = args[1], value2 = args[2] or "00"})) end
         return print(Lang:t('time.invalid'))
     else
-        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.access'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('time.access'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
