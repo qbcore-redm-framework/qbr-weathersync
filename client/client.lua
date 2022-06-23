@@ -1,4 +1,3 @@
-local QBCore = exports['qbr-core']:GetCoreObject()
 local CurrentWeather = Config.StartWeather
 local lastWeather = CurrentWeather
 local baseTime = Config.BaseTime
@@ -6,96 +5,116 @@ local timeOffset = Config.TimeOffset
 local timer = 0
 local freezeTime = Config.FreezeTime
 local blackout = Config.Blackout
+local blackoutVehicle = Config.BlackoutVehicle
 local disable = Config.Disabled
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     disable = false
     TriggerServerEvent('qbr-weathersync:server:RequestStateSync')
     TriggerServerEvent('qbr-weathersync:server:RequestCommands')
 end)
 
-function DisableSync()
-    disable = true
-
-    CreateThread(function()
-        while disable do
-            Citizen.InvokeNative(0x59174F1AFE095B5A, `SUNNY`, false, true, true, 1.0, false) -- set weather
-            NetworkClockTimeOverride(12, 0, 0, 0, true)
-            NetworkClockTimeOverride_2(12, 0, 0, 0, true, true)
-            Citizen.InvokeNative(0x193DFC0526830FD6, 0.0) -- set rain level
-            Wait(5000)
-        end
-    end)
-end
-
-function EnableSync()
+RegisterNetEvent('qbr-weathersync:client:EnableSync', function()
     disable = false
     TriggerServerEvent('qbr-weathersync:server:RequestStateSync')
-end
+end)
 
-RegisterNetEvent('qbr-weathersync:client:SyncWeather')
-AddEventHandler('qbr-weathersync:client:SyncWeather', function(NewWeather, newblackout)
+RegisterNetEvent('qbr-weathersync:client:DisableSync', function()
+	disable = true
+	CreateThread(function()
+		while disable do
+			SetRainLevel(0.0)
+			SetWeatherTypePersist('SUNNY')
+			SetWeatherTypeNow('SUNNY')
+			SetWeatherTypeNowPersist('SUNNY')
+			NetworkOverrideClockTime(12, 0, 0)
+			Wait(5000)
+		end
+	end)
+end)
+
+RegisterNetEvent('qbr-weathersync:client:SyncWeather', function(NewWeather, newblackout)
     CurrentWeather = NewWeather
     blackout = newblackout
 end)
 
-RegisterNetEvent('qbr-weathersync:client:RequestCommands')
-AddEventHandler('qbr-weathersync:client:RequestCommands', function(isAllowed)
+RegisterNetEvent('qbr-weathersync:client:RequestCommands', function(isAllowed)
     if isAllowed then
-        TriggerEvent('chat:addSuggestion', '/freezetime', _U('help_freezecommand'), {})
-        TriggerEvent('chat:addSuggestion', '/freezeweather', _U('help_freezeweathercommand'), {})
-        TriggerEvent('chat:addSuggestion', '/weather', _U('help_weathercommand'), {
-            { name=_U('help_weathertype'), help=_U('help_availableweather') }
+        TriggerEvent('chat:addSuggestion', '/freezetime', Lang:t('help.freezecommand'), {})
+        TriggerEvent('chat:addSuggestion', '/freezeweather', Lang:t('help.freezeweathercommand'), {})
+        TriggerEvent('chat:addSuggestion', '/weather', Lang:t('help.weathercommand'), {
+            { name=Lang:t('help.weathertype'), help=Lang:t('help.availableweather') }
         })
-        TriggerEvent('chat:addSuggestion', '/blackout', _U('help_blackoutcommand'), {})
-        TriggerEvent('chat:addSuggestion', '/morning', _U('help_morningcommand'), {})
-        TriggerEvent('chat:addSuggestion', '/noon', _U('help_nooncommand'), {})
-        TriggerEvent('chat:addSuggestion', '/evening', _U('help_eveningcommand'), {})
-        TriggerEvent('chat:addSuggestion', '/night', _U('help_nightcommand'), {})
-        TriggerEvent('chat:addSuggestion', '/time', _U('help_timecommand'), {
-            { name=_U('help_timehname'), help=_U('help_timeh') },
-            { name=_U('help_timemname'), help=_U('help_timem') }
+        TriggerEvent('chat:addSuggestion', '/blackout', Lang:t('help.blackoutcommand'), {})
+        TriggerEvent('chat:addSuggestion', '/morning', Lang:t('help.morningcommand'), {})
+        TriggerEvent('chat:addSuggestion', '/noon', Lang:t('help.nooncommand'), {})
+        TriggerEvent('chat:addSuggestion', '/evening', Lang:t('help.eveningcommand'), {})
+        TriggerEvent('chat:addSuggestion', '/night', Lang:t('help.nightcommand'), {})
+        TriggerEvent('chat:addSuggestion', '/time', Lang:t('help.timecommand'), {
+            { name=Lang:t('help.timehname'), help=Lang:t('help.timeh') },
+            { name=Lang:t('help.timemname'), help=Lang:t('help.timem') }
         })
     end
 end)
 
-
-Citizen.CreateThread(function()
-    while true do
-        if not disable then
-            Wait(100)
-            if lastWeather ~= CurrentWeather then
-                ClearWeatherTypePersist()
-
-                Citizen.InvokeNative(0xFA3E3CA8A1DE6D5D, GetHashKey(lastWeather), GetHashKey(CurrentWeather), 0.7, 1)
-                Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false)
-                lastWeather = CurrentWeather
-                Citizen.Wait(15000)
-            end
-
-        else
-            Citizen.Wait(1000)
-        end
-    end
-end)
-
-RegisterNetEvent('qbr-weathersync:client:SyncTime')
-AddEventHandler('qbr-weathersync:client:SyncTime', function(base, offset, freeze)
+RegisterNetEvent('qbr-weathersync:client:SyncTime', function(base, offset, freeze)
     freezeTime = freeze
     timeOffset = offset
     baseTime = base
 end)
 
-Citizen.CreateThread(function()
-    local hour = 0
-    local minute = 0
+
+
+
+
+
+CreateThread(function()
     while true do
         if not disable then
-            Citizen.Wait(0)
+            if lastWeather ~= CurrentWeather then
+                lastWeather = CurrentWeather
+                Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false) -- SetWeatherType
+                Wait(15000)
+            end
+            Wait(100) -- Wait 0 seconds to prevent crashing.
+            SetArtificialLightsState(blackout)
+            -- SetArtificialLightsStateAffectsVehicles(blackoutVehicle)
+            --ClearOverrideWeather()
+            --ClearWeatherTypePersist()
+            --SetWeatherTypeTransition(lastWeather)
+            --SetWeatherTypeNowPersist(lastWeather)
+            --SetWeatherTypeTransition(GetHashKey(lastWeather),GetHashKey(CurrentWeather), 0.7, 1)
+			Citizen.InvokeNative(0xFA3E3CA8A1DE6D5D, GetHashKey(lastWeather), GetHashKey(CurrentWeather), 0.7, 1)
+			--Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(CurrentWeather), false, true, true, 45.0, false)
+            if lastWeather == 'SNOW' or lastWeather == 'WHITEOUT' then
+                Citizen.InvokeNative(0xF6BEE7E80EC5CA40, 1) -- SetSnowLevel
+            end 
+            if lastWeather == 'DRIZZLE' or lastWeather == 'SLEET' then
+            	Citizen.InvokeNative(0x193DFC0526830FD6, 0.2)
+            elseif lastWeather == 'RAIN' or lastWeather == 'HAIL' or lastWeather == 'SHOWER' or lastWeather == 'THUNDER' then
+			 	Citizen.InvokeNative(0x193DFC0526830FD6, 0.5)
+            elseif lastWeather == 'THUNDERSTORM' then
+                Citizen.InvokeNative(0x193DFC0526830FD6, 0.7) -- SetRainLevel
+            else
+			 	Citizen.InvokeNative(0x193DFC0526830FD6, 0.0)
+                Citizen.InvokeNative(0xF6BEE7E80EC5CA40, 0)
+            end
+        else
+            Wait(1000)
+        end
+    end
+end)
+
+CreateThread(function()
+    local hour = 0
+    local minute = 0
+    local second = 0        --Add seconds for shadow smoothness
+    while true do
+        if not disable then
+            Wait(0)
             local newBaseTime = baseTime
-            if GetGameTimer() - 500  > timer then
-                newBaseTime = newBaseTime + 0.25
+            if GetGameTimer() - 22  > timer then    --Generate seconds in client side to avoid communiation
+                second = second + 1                 --Minutes are sent from the server every 2 seconds to keep sync
                 timer = GetGameTimer()
             end
             if freezeTime then
@@ -103,16 +122,13 @@ Citizen.CreateThread(function()
             end
             baseTime = newBaseTime
             hour = math.floor(((baseTime+timeOffset)/60)%24)
-            minute = math.floor((baseTime+timeOffset)%60)
-            SetClockTime(hour, minute, 0)
-            AdvanceClockTimeTo(hour, minute, 0)
-            NetworkClockTimeOverride(hour, minute, 0, 0, true)
-            NetworkClockTimeOverride_2(hour, minute, 0, 0, true, true)
+            if minute ~= math.floor((baseTime+timeOffset)%60) then  --Reset seconds to 0 when new minute
+                minute = math.floor((baseTime+timeOffset)%60)
+                second = 0
+            end
+            NetworkClockTimeOverride(hour, minute, second)          --Send hour included seconds to network clock time
         else
-            Citizen.Wait(1000)
+            Wait(1000)
         end
     end
 end)
-
-exports('disableSync', DisableSync)
-exports('enableSync', EnableSync)
