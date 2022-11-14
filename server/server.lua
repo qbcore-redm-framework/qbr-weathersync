@@ -242,7 +242,7 @@ RegisterCommand('weather', function(source, args, rawCommand)
         if (success) then return print(Lang:t('weather.updated')) end
         return print(Lang:t('weather.invalid'))
     else
-        TriggerClientEvent('QBCore:Notify', Lang:t('error.not_access'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
+        TriggerClientEvent('QBCore:Notify', source, 9, Lang:t('error.not_access'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
     end
 end)
 
